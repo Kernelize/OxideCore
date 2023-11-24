@@ -22,22 +22,42 @@ pub fn rust_main() -> ! {
     logging::init();
     println!("\nOxideCore is booting...");
     println!("{}", LOGO);
-    trace!("shit!");
-    info!("shit!");
-    debug!("shit!");
-    warn!("shit!");
+    dump_mem_layout();
     error!("shit!");
-    panic!("G");
+    panic!("Time to stop");
     loop {}
 }
 
 fn clear_bss() {
+    #[allow(unused)]
     extern "C" {
-        // Boundaries of the .bss section, provided by the linker script
+        // Get symbol from linker.ld
         fn sbss();
         fn ebss();
     }
     (sbss as usize..ebss as usize).for_each(|p| unsafe {
         (p as *mut u8).write_volatile(0);
     });
+}
+
+fn dump_mem_layout() {
+    #[allow(unused)]
+    extern "C" {
+        // Get symbol from linker.ld
+        fn sbss();
+        fn ebss();
+        fn stext();
+        fn etext();
+        fn srodata();
+        fn erodata();
+        fn sdata();
+        fn edata();
+        fn skernel();
+        fn ekernel();
+    }
+    info!(".kernel [{:#x}, {:#x})", skernel as usize, ekernel as usize);
+    info!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
+    info!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
+    info!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
+    info!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
 }

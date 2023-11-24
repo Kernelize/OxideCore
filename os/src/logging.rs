@@ -7,7 +7,7 @@ struct SimpleLogger;
 
 impl Log for SimpleLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= Level::Info
+        metadata.level() <= Level::Trace
     }
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
@@ -35,7 +35,7 @@ pub fn init() {
         Some("warn") => LevelFilter::Warn,
         Some("error") => LevelFilter::Error,
         Some("off") => LevelFilter::Off,
-        _ => LevelFilter::Info,
+        _ => LevelFilter::Trace,
     });
 }
 
