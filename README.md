@@ -4,7 +4,7 @@ A Simple Unix-like Kernel Written in Rust
 ## Tool Chain
 On MacOS:
 ```bash
-brew install rustup
+brew install rustup qemu
 rustup default nightly
 rustup target add riscv64gc-unknown-none-elf
 cargo install cargo-binutils
