@@ -10,7 +10,7 @@ mod console;
 mod logging;
 
 use core::arch::global_asm;
-use log::error;
+use log::{error, trace, info, debug, warn};
 
 use crate::{logo::LOGO,};
 
@@ -22,6 +22,10 @@ pub fn rust_main() -> ! {
     logging::init();
     println!("\nOxideCore is booting...");
     println!("{}", LOGO);
+    trace!("shit!");
+    info!("shit!");
+    debug!("shit!");
+    warn!("shit!");
     error!("shit!");
     panic!("G");
     loop {}
