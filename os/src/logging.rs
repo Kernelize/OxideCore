@@ -1,9 +1,6 @@
-use core::{arch};
+use core::arch;
 
-use crate::{
-    println,
-    cpu,
-};
+use crate::{cpu, println};
 use log::{self, Level, LevelFilter, Log, Metadata, Record};
 
 struct SimpleLogger;
@@ -20,8 +17,14 @@ impl Log for SimpleLogger {
     }
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            // let level = with_color!(format_args!("{}", record.level()), level_to_color_code(record.level()));
-            println!("[{}][{}] - {}", record.level(), cpu::id(), record.args());
+            let color_code = level_to_color_code(record.level());
+            let args = record.args();
+            println!(
+                "[{}][{}] - {}",
+                format_args!("\x1b[{}m{}\x1b[0m", color_code, args,),
+                cpu::id(),
+                format_args!("\x1b[{}m{}\x1b[0m", color_code, args,),
+            );
         }
     }
     fn flush(&self) {}
@@ -30,14 +33,14 @@ impl Log for SimpleLogger {
 pub fn init() {
     static LOGGER: SimpleLogger = SimpleLogger;
     log::set_logger(&LOGGER).unwrap();
-    log::set_max_level(match option_env!("LOG"){
+    log::set_max_level(match option_env!("LOG") {
         Some("trace") => LevelFilter::Trace,
         Some("debug") => LevelFilter::Debug,
         Some("info") => LevelFilter::Info,
         Some("warn") => LevelFilter::Warn,
         Some("error") => LevelFilter::Error,
         Some("off") => LevelFilter::Off,
-        _ => LevelFilter::Trace,
+        _ => LevelFilter::Info,
     });
 }
 
