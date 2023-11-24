@@ -5,23 +5,18 @@ use log::{self, Level, LevelFilter, Log, Metadata, Record};
 
 struct SimpleLogger;
 
-macro_rules! with_color {
-    ($args: ident, $color_code: ident) => {{
-        format_args!("\u{1B}[{}m{}\u{1B}[0m", $color_code as u8, $args)
-    }};
-}
-
 impl Log for SimpleLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
         metadata.level() <= Level::Info
     }
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            let color_code = level_to_color_code(record.level());
+            let level = record.level();
+            let color_code = level_to_color_code(level);
             let args = record.args();
             println!(
                 "[{}][{}] - {}",
-                format_args!("\x1b[{}m{}\x1b[0m", color_code, args,),
+                format_args!("\x1b[{}m{}\x1b[0m", color_code, level,),
                 cpu::id(),
                 format_args!("\x1b[{}m{}\x1b[0m", color_code, args,),
             );
