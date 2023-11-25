@@ -10,11 +10,12 @@ mod console;
 mod logging;
 mod sync;
 mod batch;
+mod trap;
 
 use core::arch::global_asm;
 use log::{error, trace, info, debug, warn};
 
-use crate::{sync::UPSafeCell, logo::LOGO,};
+use crate::{sync::UPSafeCell, logo::LOGO};
 
 global_asm!(include_str!("entry.asm"));
 global_asm!(include_str!("link_app.S"));
@@ -23,7 +24,8 @@ global_asm!(include_str!("link_app.S"));
 pub fn rust_main() -> ! {
     clear_bss();
     logging::init();
-    println!("\nOxideCore is booting...");
+    println!("\n");
+    kprintln!("OxideCore is booting...");
     println!("{}", LOGO);
     dump_mem_layout();
     error!("shit!");
