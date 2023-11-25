@@ -1,10 +1,18 @@
+# enable .rept/.endr
+.altmacro
 # save general-purpose registers except sp/tp
 .macro SAVE_GP n
     sd x\n, \n*8(sp)
 .endm
 
-.align 2
+    .section .text
+    .globl __alltraps
+    .globl __restore
+    .align 2
+    # stvec must be aligned to 4 bytes
+    .align 2
 __alltraps:
+    # swap sp and sscratch
     csrrw sp, sscratch, sp
     # now sp->kernel stack, sscratch->user stack
     # allocate a TrapContext on kernel stack
@@ -30,6 +38,7 @@ __alltraps:
     sd t2, 2*8(sp)
     # set input argument of trap_handler(cx: &mut TrapContext)
     mv a0, sp
+    # call will save our current pc in ra(x1)
     call trap_handler
 
 
@@ -62,5 +71,6 @@ __restore:
     addi sp, sp, 34*8
     # now sp->kernel stack, sscratch->user stack
     csrrw sp, sscratch, sp
+    # now sp->user stack, sscratch->kernel stack
     sret
 

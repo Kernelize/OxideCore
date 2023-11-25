@@ -1,5 +1,3 @@
-use core::arch;
-
 use crate::{cpu, println};
 use log::{self, Level, LevelFilter, Log, Metadata, Record};
 

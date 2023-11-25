@@ -2,20 +2,21 @@
 #![no_main]
 #![feature(panic_info_message)]
 
-mod lang_items;
-mod sbi;
-mod cpu;
-mod logo;
-mod console;
-mod logging;
-mod sync;
 mod batch;
+mod console;
+mod cpu;
+mod lang_items;
+mod logging;
+mod logo;
+mod sbi;
+mod sync;
 mod trap;
+mod syscall;
 
 use core::arch::global_asm;
-use log::{error, trace, info, debug, warn};
+use log::{debug, error, info, trace, warn};
 
-use crate::{sync::UPSafeCell, logo::LOGO};
+use crate::logo::LOGO;
 
 global_asm!(include_str!("entry.asm"));
 global_asm!(include_str!("link_app.S"));
@@ -28,9 +29,11 @@ pub fn rust_main() -> ! {
     kprintln!("OxideCore is booting...");
     println!("{}", LOGO);
     dump_mem_layout();
-    error!("shit!");
-    panic!("Time to stop");
-    loop {}
+    trap::init();
+    batch::init();
+    kprintln!("OxideCore is ready!");
+    batch::run_next_app();
+    unreachable!()
 }
 
 fn clear_bss() {
