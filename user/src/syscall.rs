@@ -1,4 +1,5 @@
 use core::arch::asm;
+use cty::{c_ulong, c_int};
 
 const SYSCALL_WRITE: usize = 64;
 const SYSCALL_EXIT: usize = 93;
@@ -15,6 +16,12 @@ fn syscall(id: usize, args: [usize; 3]) -> isize {
         );
     }
     ret
+}
+
+// for c ffi
+#[no_mangle]
+pub extern "C" fn csyscall(id: c_ulong, arg1: c_ulong, arg2: c_ulong, arg3: c_ulong) -> c_int{
+    syscall(id as usize, [arg1 as usize, arg2 as usize, arg3 as usize]) as c_int
 }
 
 pub fn sys_write(fd: usize, buf: &[u8]) -> isize {

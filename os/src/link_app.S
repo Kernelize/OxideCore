@@ -43,5 +43,5 @@ app_3_end:
     .global app_4_start
     .global app_4_end
 app_4_start:
-    .incbin "../user/target/riscv64gc-unknown-none-elf/release/hello_world.bin"
+    .incbin "../user/target/riscv64gc-unknown-none-elf/release/05ctest.bin"
 app_4_end:

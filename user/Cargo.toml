@@ -2,6 +2,11 @@
 name = "user_lib"
 version = "0.1.0"
 edition = "2021"
+crate-type = ["staticlib"]
+
+# [lib]
+# crate-type = ["staticlib"]
+# name = "user_lib"
 
 [profile.release]
 debug = true
@@ -9,3 +14,4 @@ debug = true
 [dependencies]
 riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] } 
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+cty = "0.2"
